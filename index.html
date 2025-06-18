@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gráfico de Desigualdades</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <h2>Región de solución de desigualdades con dos variables</h2>
+  <div id="grafico" style="width: 100%; height: 600px;"></div>
+
+  <script>
+    // Desigualdades: ejemplo: y ≤ -0.5x + 4  y  y ≥ x - 2
+    const x = [];
+    for (let i = -10; i <= 10; i += 0.1) x.push(i);
+
+    const y1 = x.map(x => -0.5 * x + 4); // Recta 1
+    const y2 = x.map(x => x - 2);        // Recta 2
+
+    // Determinar la región común (mínimos y máximos entre las dos curvas)
+    const yMin = y1.map((val, i) => Math.max(val, y2[i])); // y ≥ max
+    const yMax = y1.map((val, i) => Math.min(val, y2[i])); // y ≤ min
+
+    const region = {
+      x: [...x, ...x.reverse()],
+      y: [...yMax, ...yMin.reverse()],
+      fill: 'toself',
+      fillcolor: 'rgba(0, 200, 0, 0.3)',
+      line: {width: 0},
+      type: 'scatter',
+      name: 'Región solución'
+    };
+
+    const linea1 = {
+      x: x,
+      y: y1,
+      type: 'scatter',
+      mode: 'lines',
+      name: 'y ≤ -0.5x + 4',
+      line: {color: 'red'}
+    };
+
+    const linea2 = {
+      x: x,
+      y: y2,
+      type: 'scatter',
+      mode: 'lines',
+      name: 'y ≥ x - 2',
+      line: {color: 'blue'}
+    };
+
+    const layout = {
+      title: 'Solución gráfica de desigualdades',
+      xaxis: {title: 'x'},
+      yaxis: {title: 'y'},
+      showlegend: true
+    };
+
+    Plotly.newPlot('grafico', [region, linea1, linea2], layout);
+  </script>
+</body>
+</html>
